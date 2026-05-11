@@ -8,6 +8,8 @@ Wuraola FO, Olasehinde O, Di Bernardo M, Aderounmu AA, Adisa AO, Omoyiola OZ, Om
 
 This repository contains the statistical analysis code for a retrospective cohort study examining the clinicopathological characteristics and outcomes of breast cancer patients who achieved 5-year survival at a Nigerian tertiary hospital. The study compares survivors with non-survivors to identify factors associated with long-term survival in a resource-limited setting.
 
+> **Important note on scope:** The psychosocial analysis (qualitative themes, patient interviews) described in the paper was conducted by the clinical research team using qualitative methods. This repository contains the **quantitative/survival analysis component** only. The qualitative psychosocial analysis was led by the PI (Dr. Wuraola) through structured patient interviews and thematic coding, which is standard practice in mixed-methods clinical research.
+
 ### Key Features of the Analysis
 
 1. **Descriptive Statistics**: Comprehensive characterization of survivors and non-survivors
@@ -32,9 +34,9 @@ The study found that advanced clinical stage (Stage III/IV) at presentation was 
 ```
 .
 ├── README.md                    # This file
-├── analysis.R                   # Main analysis script with comprehensive documentation
+├── analysis.R                   # Main analysis script
 ├── data.csv                     # De-identified patient data
-├── results/                     # Output directory for analysis results
+├── results/                     # Output directory (created on first run)
 │   ├── univariate_cox_regression.csv
 │   ├── median_survival_univariate.csv
 │   ├── cox_regression_clinical_stage.txt
@@ -42,26 +44,38 @@ The study found that advanced clinical stage (Stage III/IV) at presentation was 
 └── .gitignore                   # Git ignore file for R projects
 ```
 
+## Output Mapping: Script → Paper
+
+The table below maps each section of `analysis.R` to the corresponding table or figure in the published paper.
+
+| Script Section | analysis.R Section | Output File | Paper Element |
+|---|---|---|---|
+| Descriptive statistics | §2 | *(console)* | Table 1 — Demographics & Clinical Profile |
+| Two-proportion z-tests | §3 (prop.test) | *(console)* | Table 1 — p-value column |
+| t-tests & Wilcoxon tests | §3 (t.test / wilcox.test) | *(console)* | Table 1 — p-value column (continuous & ordinal) |
+| Univariate Cox regression | §5 | `results/univariate_cox_regression.csv` | Table 2 — Hazard ratios |
+| Median survival by covariate | §6 | `results/median_survival_univariate.csv` | Table 2 — Median survival column |
+| Kaplan-Meier curves | §7 | `results/kaplan_meier_clinical_stage.pdf` | Figure 1 — KM survival curves by stage |
+| Cox regression (stage) | §7 | `results/cox_regression_clinical_stage.txt` | In-text — Stage-specific HR |
+| PH assumption tests | §8 | *(console)* | Methods — Model diagnostics |
+
+### Note on Hardcoded Values
+
+The `prop.test()` calls in Section 3 use hardcoded counts (e.g., `prop.test(x = c(158, 189), n = c(163, 192))`). These values were manually counted from data cross-tabulations and verified against Table 1 of the published paper. The counts differ across variables because the denominators vary with missingness in the source data.
+
 ## Requirements
 
 ### R Version
+
 - R ≥ 4.0.0 recommended
 
 ### R Package Dependencies
 
 ```r
-# Data manipulation
-dplyr
-lubridate
-
-# Survival analysis
-survival
-survminer
-
-# Data import and formatting
-haven          # For SPSS/Stata/SAS files
-sjlabelled     # For working with labelled data
-finalfit       # For clinical data tables
+# Core (required)
+dplyr        # Data manipulation
+survival     # Survival analysis
+survminer    # Survival analysis visualization (KM curves)
 ```
 
 ### Installation
@@ -69,8 +83,7 @@ finalfit       # For clinical data tables
 Install required packages using the following R commands:
 
 ```r
-install.packages(c("dplyr", "survminer", "survival", "lubridate",
-                   "finalfit", "haven", "sjlabelled"))
+install.packages(c("dplyr", "survminer", "survival"))
 ```
 
 ## Usage
@@ -81,7 +94,7 @@ install.packages(c("dplyr", "survminer", "survival", "lubridate",
 2. Ensure all required R packages are installed (see Requirements above)
 3. Set your working directory to the repository folder:
    ```r
-   setwd("/path/to/git_repo")
+   setwd("/path/to/breast-cancer-survivors-psychosocial")
    ```
 4. Run the analysis script:
    ```r
@@ -92,10 +105,12 @@ install.packages(c("dplyr", "survminer", "survival", "lubridate",
 
 The analysis will generate the following files in the `results/` directory:
 
-1. **univariate_cox_regression.csv**: Hazard ratios, confidence intervals, and p-values for all covariates
-2. **median_survival_univariate.csv**: Median survival times stratified by each clinical variable
-3. **cox_regression_clinical_stage.txt**: Detailed Cox regression output for clinical stage
-4. **kaplan_meier_clinical_stage.pdf**: Survival curves comparing early (I/II) vs advanced (III/IV) stage
+| File | Description |
+|---|---|
+| `univariate_cox_regression.csv` | Hazard ratios, 95% CI, Wald test, and p-values for all covariates |
+| `median_survival_univariate.csv` | Median survival times stratified by each clinical variable |
+| `cox_regression_clinical_stage.txt` | Full Cox regression summary for clinical stage grouping |
+| `kaplan_meier_clinical_stage.pdf` | KM survival curves: Stage I/II vs Stage III/IV with risk table |
 
 ## Data Dictionary
 
@@ -109,34 +124,34 @@ The analysis will generate the following files in the `results/` directory:
 | `complaint_duration` | Duration of symptoms before presentation | Months |
 | `overall_clinical_stage` | TNM clinical stage | 1: Stage I, 2: Stage II, 3: Stage III, 4: Stage IV |
 | `overall_clinical_stage_grouped` | Grouped clinical stage | 1: Stage I/II, 2: Stage III/IV |
-| `grade` | Nottingham histologic grade | 1: Well differentiated, 2: Moderately differentiated, 3: Poorly differentiated |
+| `grade` | Nottingham histologic grade | 1: Well, 2: Moderate, 3: Poorly differentiated |
 | `ihc_er` | Estrogen receptor status | 0: Negative, 1: Positive |
 | `ihc_pr` | Progesterone receptor status | 0: Negative, 1: Positive |
 | `ihc_her2` | HER2 status | 0: Negative, 1: Positive |
-| `ihc_triple_neg` | Triple negative status | 0: No, 1: Yes (ER-/PR-/HER2-) |
+| `ihc_triple_neg` | Triple negative status | 0: No, 1: Yes (ER−/PR−/HER2−) |
 | `neoadjuvant` | Received neoadjuvant chemotherapy | 0: No, 1: Yes |
 | `adjuvant` | Received adjuvant chemotherapy | 0: No, 1: Yes |
 | `surgery` | Received surgical treatment | 0: No, 1: Yes |
 | `radiotherapy` | Received radiotherapy | 0: No, 1: Yes |
-| `multimodal` | Received multimodal treatment (surgery + radiotherapy + chemotherapy) | 0: No, 1: Yes |
+| `multimodal` | Received multimodal treatment (surgery + RT + chemo) | 0: No, 1: Yes |
 | `status` | Follow-up status | 1: Alive, 2: Lost to follow-up, 3: Deceased |
-| `time` | Survival time | Months from diagnosis to death or last follow-up |
+| `time` | Survival time (computed) | Months from diagnosis to event |
 
 ## Statistical Methods
 
 ### Descriptive Analysis
-- Continuous variables: Mean ± SD, median (IQR)
+- Continuous variables: Mean ± SD
 - Categorical variables: Frequencies and percentages
 
 ### Comparative Analysis
-- **Binary variables**: Two-proportion z-tests
-- **Continuous variables**: Two-sample t-tests (assuming unequal variances)
+- **Binary variables**: Two-proportion z-tests (hardcoded from Table 1)
+- **Continuous variables**: Welch's two-sample t-tests
 - **Ordinal variables**: Wilcoxon rank sum tests
 
 ### Survival Analysis
 - **Univariate Cox regression**: Separate models for each covariate
 - **Kaplan-Meier curves**: Survival probability estimation with log-rank tests
-- **Proportional hazards assumption**: Tested using Schoenfeld residuals
+- **Proportional hazards assumption**: Tested using Schoenfeld residuals (`cox.zph`)
 
 ## Ethics
 
@@ -144,7 +159,7 @@ This study was approved by the Ethics and Research Committee of Obafemi Awolowo 
 
 ## Authors
 
-- **Funmilola Olanike Wuraola** (Principal Investigator)
+- **Funmilola Olanike Wuraola** — Principal Investigator
 - Olalekan Olasehinde
 - Matteo Di Bernardo
 - Adewale Abdulwasiu Aderounmu
@@ -161,7 +176,7 @@ This code is provided for research and educational purposes. Please cite the ori
 
 ## Contact
 
-For questions about the analysis or data, please contact the corresponding author through the journal publication.
+For questions about the analysis or data, please contact the corresponding author through the [journal publication](https://ascopubs.org/doi/full/10.1200/GO.23.00022).
 
 ## Acknowledgments
 

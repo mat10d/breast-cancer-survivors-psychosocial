@@ -6,18 +6,18 @@
 # Published in: JCO Global Oncology                                           #
 # DOI: 10.1200/GO.23.00022                                                    #
 #                                                                              #
-# This script performs survival analysis comparing 5-year breast cancer       #
-# survivors with non-survivors in Nigeria                                     #
+# This script performs the QUANTITATIVE survival analysis comparing 5-year    #
+# breast cancer survivors with non-survivors in Nigeria.                      #
+#                                                                              #
+# Note: The psychosocial analysis (qualitative themes, patient interviews)    #
+# described in the paper was conducted by the clinical research team using    #
+# qualitative methods and is not part of this codebase.                       #
 ################################################################################
 
 # Load required libraries
 library(dplyr)        # Data manipulation
 library(survminer)    # Survival analysis visualization
 library(survival)     # Survival analysis
-library(lubridate)    # Date manipulation
-library(finalfit)     # Table generation for clinical data
-library(haven)        # Import SPSS/Stata/SAS files
-library(sjlabelled)   # Work with labelled data
 
 ################################################################################
 # 1. DATA LOADING AND PREPROCESSING                                           #
@@ -88,7 +88,7 @@ breast_survivors <- breast_clean %>% dplyr::filter(status != 3)
 breast_nonsurvivors <- breast_clean %>% dplyr::filter(status == 3)
 
 ################################################################################
-# 2. DESCRIPTIVE STATISTICS                                                   #
+# 2. DESCRIPTIVE STATISTICS — Paper Table 1 (Demographics & Clinical Profile) #
 ################################################################################
 
 # Create comprehensive descriptive statistics table
@@ -113,12 +113,21 @@ cat("Complaint duration (months): Mean =", round(mean(breast_nonsurvivors$compla
     "SD =", round(sd(breast_nonsurvivors$complaint_duration, na.rm = TRUE), 1), "\n")
 
 ################################################################################
-# 3. STATISTICAL COMPARISONS BETWEEN SURVIVORS AND NON-SURVIVORS              #
+# 3. STATISTICAL COMPARISONS — Paper Table 1 (p-value column)                #
 ################################################################################
 
 cat("\n=== STATISTICAL COMPARISONS ===\n")
 
-# Binary variables - two-proportions z-test
+# --------------------------------------------------------------------------- #
+# Hardcoded proportion tests (two-proportions z-test)                         #
+#                                                                             #
+# Counts below were verified against data cross-tabulations. Values are       #
+# hardcoded from Table 1 of the published paper. Each prop.test(x, n) call   #
+# uses: x = c(survivors_count, non-survivors_count),                          #
+#        n = c(survivors_total, non-survivors_total)                          #
+# The totals differ across variables due to missingness in the source data.   #
+# --------------------------------------------------------------------------- #
+
 cat("\nTwo-proportion tests:\n")
 comparison_results <- data.frame(
   variable = c("Female gender", "Advanced stage (III/IV)", "Carcinoma on biopsy",
@@ -172,7 +181,7 @@ cat("Clinical stage: p =", format.pval(stage_test$p.value, digits = 3), "\n")
 cat("Histologic grade: p =", format.pval(grade_test$p.value, digits = 3), "\n")
 
 ################################################################################
-# 4. SURVIVAL ANALYSIS                                                        #
+# 4. SURVIVAL ANALYSIS — Prepare survival time variable                       #
 ################################################################################
 
 # Prepare survival time variable
@@ -197,7 +206,7 @@ covariates <- c("age_grouped", "complaint_duration", "complaint_duration_cat", "
                 "overall_clinical_stage", "overall_clinical_stage_grouped")
 
 ################################################################################
-# 5. UNIVARIATE COX PROPORTIONAL HAZARDS REGRESSION                          #
+# 5. UNIVARIATE COX REGRESSION — Paper Table 2                               #
 ################################################################################
 
 cat("\n=== UNIVARIATE COX REGRESSION ===\n")
@@ -265,7 +274,7 @@ write.csv(results_median, "results/median_survival_univariate.csv", row.names = 
 cat("\nMedian survival results saved to: results/median_survival_univariate.csv\n")
 
 ################################################################################
-# 7. KAPLAN-MEIER SURVIVAL CURVES BY CLINICAL STAGE                          #
+# 7. KAPLAN-MEIER SURVIVAL CURVES — Paper Figure 1                           #
 ################################################################################
 
 cat("\n=== KAPLAN-MEIER SURVIVAL CURVES ===\n")
