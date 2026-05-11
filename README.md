@@ -2,7 +2,7 @@
 
 ## Citation
 
-Wuraola F, Akinyemi OO, Olopade OI, Daramola AO, Lawal OO, Ajekigbe AT, Salako O, Alatise OI, Habeebu MYM, Kingham TP, Ranasinghe I, Adesunkanmi AO, Adisa AO, Arowolo OA, Popoola AO, Chiedozie LC. **Five-Year Breast Cancer Survivors in a Nigerian Tertiary Hospital: Clinicopathological Profile and Psychosocial Experiences.** *JCO Glob Oncol.* 2023 Jul;9:e2300022. doi: [10.1200/GO.23.00022](https://ascopubs.org/doi/full/10.1200/GO.23.00022). PMID: 37406205.
+Wuraola FO, Olasehinde O, Di Bernardo M, Aderounmu AA, Adisa AO, Omoyiola OZ, Omisore AD, Kingham TP, Mango V, Alatise OI. **Five-Year Breast Cancer Survivors in a Nigerian Tertiary Hospital: Clinicopathological Profile and Psychosocial Experiences.** *JCO Glob Oncol.* 2023 Jul;9:e2300022. doi: [10.1200/GO.23.00022](https://ascopubs.org/doi/full/10.1200/GO.23.00022). PMID: 37406205.
 
 ## Project Description
 
@@ -144,22 +144,16 @@ This study was approved by the Ethics and Research Committee of Obafemi Awolowo 
 
 ## Authors
 
-- **Funmi Wuraola** (Principal Investigator)
-- Olusegun O. Akinyemi
-- Olufunmilayo I. Olopade
-- Adewale O. Daramola
-- Olalekan O. Lawal
-- Adeyemi T. Ajekigbe
-- Omolola Salako
-- Olusegun I. Alatise
-- Moruf Y.M. Habeebu
-- T. Peter Kingham
-- Indhira Ranasinghe
-- Abdulwaheed O. Adesunkanmi
-- Adewale O. Adisa
-- Olusegun A. Arowolo
-- Adeyemi O. Popoola
-- Linus C. Chiedozie
+- **Funmilola Olanike Wuraola** (Principal Investigator)
+- Olalekan Olasehinde
+- Matteo Di Bernardo
+- Adewale Abdulwasiu Aderounmu
+- Adewale Oluseye Adisa
+- Oluwatosin Zaniab Omoyiola
+- Adeleye Dorcas Omisore
+- Thomas Peter Kingham
+- Victoria Mango
+- Olusegun Isaac Alatise
 
 ## License
 
